@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    // В какую версию JS нужно скомпилировать наш TS код
+    "target": "es2020",
+
+    // Какую модульную систему использовать
+    "module": "commonjs",
+
+    // Учитывать регистр при импорте из файла (Иначе на некоторых системах можно использовать импорт,
+    // например из file1.ts, хотя сам файл называется с большой буквы - File1.ts)
+    "forceConsistentCasingInFileNames": true,
+
+    // Включить строгие настройки для проверки типов
+    "strict": true,
+
+    // Пропустить проверки типов в node_modules
+    "skipLibCheck": true,
+
+    // Создавать .d.ts файлы
+    "declaration": true,
+
+    // Убирать комменты при компиляции (для уменьшения размер файлов)
+    "removeComments": true,
+
+    // Создавать связующий файлы, которые показывают привязку между js и ts файлами. Нужны для нормального дебаггинга typescript.
+    "sourceMap": true,
+
+    // Куда компилировать
+    "outDir": "./dist",
+
+    // Что компилировать
+    "baseUrl": "./src",
+
+    // Запретить неявные типы any (но разрешить явные)
+    "noImplicitAny": true,
+
+    // Запретить функции, которые могут и возвращать и не возвращать значения
+    "noImplicitReturns": true,
+
+    // Служебное
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "incremental": true,
+    "alwaysStrict": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true
+  }
+}
