@@ -1,33 +1,146 @@
 // Создайте такой тип A, при котором фрагмент кода ниже успешно запустится без ошибок:
-type SomeStructure1 = Record<string, number | string>;
+// type SomeStructure1 = Record<string, number | string>;
+//
+// type A = {
+//   age?: number | string;
+//   nick: string;
+//   info: (number | string)[] | object;
+//   photo?: string | null;
+// };
+//
+// const a1: A = {
+//   age: 10,
+//   nick: 'mynick',
+//   info: [1, 100],
+//   photo: 'string',
+// };
+//
+// const a2: A = {
+//   age: '10 years',
+//   nick: '',
+//   info: { id: 100 },
+//   photo: null,
+// };
+//
+// const a3: A = {
+//   nick: '       ',
+//   info: ['secret', 'key'],
+// };
+//
+// const a4: A = {
+//   nick: '',
+//   info: {},
+// };
 
-type A = {
-  age?: number | string;
-  nick: string;
-  info: (number | string)[] | object;
-  photo?: string | null;
-};
+// Напишите функцию, которая на вход получает массив объектов и выдает сумму значений всех полей всех объектов.
+//   Гарантируется, что в объекте будут содержаться только числа.
+//   Для типизации входных данных используйте Record (про него выше описано)
+// const func = (obj: Record<string, number>[]): number => {
+//   let summa: number = 0;
+//   for (let i = 0; i < obj.length; i++) {
+//     for (const objKey in obj[i]) {
+//       summa += obj[i][objKey];
+//     }
+//   }
+//   return summa;
+// };
+// console.log(func([{ a: 20, b: 30 }, {}, { a: 3 }, { x: 5 }])); // 58
 
-const a1: A = {
-  age: 10,
-  nick: 'mynick',
-  info: [1, 100],
-  photo: 'string',
-};
+/*
+Напишите функцию, которая получает на вход семью и выводит в консоль список покупок этой семьи.
+Если название продукта имеет чётное количество знаков - выведите название ЗАГЛАВНЫМИ БУКВАМИ, например
+Опишите типы:
+* Product
+* Person
+* Family
+Часть данных вам уже дана, осталось доработать функцию.
+Вывод программы должен быть таким же, как в скриншоте ниже.
+ */
+//
+// type Product = {
+//   name: string;
+//   count: number;
+// };
+//
+// type Person = {
+//   name: string;
+//   products: Product[];
+// };
+//
+// type Family = {
+//   name: string;
+//   persons: Person[];
+// };
+//
+// const family: Family = {
+//   name: 'Алексеевы',
+//   persons: [
+//     {
+//       name: 'Отец',
+//       products: [
+//         { name: 'Кофе', count: 2 },
+//         { name: 'Колбаса', count: 3 },
+//         { name: 'Огурцы', count: 3 },
+//       ],
+//     },
+//     {
+//       name: 'Мать',
+//       products: [
+//         { name: 'Молоко', count: 1 },
+//         { name: 'Сыр', count: 74 },
+//       ],
+//     },
+//     {
+//       name: 'Дочь',
+//       products: [
+//         { name: 'Конфеты', count: 29 },
+//         { name: 'Лимонад', count: 30 },
+//         { name: 'Салат', count: 3 },
+//         { name: 'Помидоры', count: 3 },
+//       ],
+//     },
+//     {
+//       name: 'Сын',
+//       products: [{ name: 'Чипсы', count: 1 }],
+//     },
+//   ],
+// };
+//
+// const familis = (obj: Family) => {
+//   console.log('Список покупок "Алексеевы"');
+//   for (let i = 0; i < obj.persons.length; i++) {
+//     console.log(`${obj.persons[i].name}:`);
+//     obj.persons[i].products.forEach((el) => {
+//       console.log(`* ${el.name} (${el.count})`);
+//     });
+//   }
+//   return '';
+// };
+// console.log(familis(family));
 
-const a2: A = {
-  age: '10 years',
-  nick: '',
-  info: { id: 100 },
-  photo: null,
-};
+// Напишите функцию, которая принимает на вход строку, и возвращает true/false
+// является ли эта строка палиндромом или нет.
+// const palindrom = (str: string): boolean => {
+//   const newStr: string = str.split('').reverse().join('');
+//   return newStr === str;
+// };
+// console.log(palindrom('топот'));
 
-const a3: A = {
-  nick: '       ',
-  info: ['secret', 'key'],
-};
+// Напишите функцию isTwins, которая получает на вход 2 числа, а возвращает являются ли эти числа близнецами.
+// Близнецы - числа, являющиеся обратными друг другу.
+// Конвертировать эти числа в строки запрещено! Иначе это просто предыдущая задача “Палиндром”!
 
-const a4: A = {
-  nick: '',
-  info: {},
+const isTwins = (num1: number, num: number): boolean => {
+  let reversed = 0;
+  const isNegative = num < 0;
+  num = Math.abs(num);
+  while (num > 0) {
+    reversed = reversed * 10 + (num % 10);
+    num = parseInt(String(num / 10));
+  }
+  const newNum = isNegative ? -reversed : reversed;
+  return newNum === num1;
 };
+console.log(isTwins(123, 321)); // true
+console.log(isTwins(123456789, 987654321)); // true
+console.log(isTwins(121, 211)); // false
