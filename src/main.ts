@@ -1,4 +1,4 @@
-import { users } from './type';
+import { divider, filterByRole, generateRandomUser, joinWithCase, Style } from './type';
 // Создайте такой тип A, при котором фрагмент кода ниже успешно запустится без ошибок:
 // type SomeStructure1 = Record<string, number | string>;
 //
@@ -132,4 +132,15 @@ import { users } from './type';
 //   }),
 // );
 
-console.log(users());
+// console.log(users());
+// console.log(generateRandomUser(10));
+console.log(filterByRole(generateRandomUser(10), 'admin'));
+
+console.log(divider(123));
+
+const testCase3 = ['uSEr', 'FIRST', 'Login', 'dATE'];
+
+console.log(joinWithCase(testCase3, Style.PascalCase)); // UserFirstLoginDate
+console.log(joinWithCase(testCase3, Style.camelCase)); // userFirstLoginDate
+console.log(joinWithCase(testCase3, Style.snake_case)); // user_first_login_date
+console.log(joinWithCase(testCase3, Style['kebab-case'])); // user-first-login-date
