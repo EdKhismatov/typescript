@@ -1,3 +1,4 @@
+import { users } from './type';
 // Создайте такой тип A, при котором фрагмент кода ниже успешно запустится без ошибок:
 // type SomeStructure1 = Record<string, number | string>;
 //
@@ -45,7 +46,6 @@
 //   return summa;
 // };
 // console.log(func([{ a: 20, b: 30 }, {}, { a: 3 }, { x: 5 }])); // 58
-
 /*
 Напишите функцию, которая получает на вход семью и выводит в консоль список покупок этой семьи.
 Если название продукта имеет чётное количество знаков - выведите название ЗАГЛАВНЫМИ БУКВАМИ, например
@@ -56,7 +56,7 @@
 Часть данных вам уже дана, осталось доработать функцию.
 Вывод программы должен быть таким же, как в скриншоте ниже.
  */
-//
+
 // type Product = {
 //   name: string;
 //   count: number;
@@ -67,7 +67,7 @@
 //   products: Product[];
 // };
 //
-// type Family = {
+// export type Family = {
 //   name: string;
 //   persons: Person[];
 // };
@@ -118,29 +118,18 @@
 // };
 // console.log(familis(family));
 
-// Напишите функцию, которая принимает на вход строку, и возвращает true/false
-// является ли эта строка палиндромом или нет.
-// const palindrom = (str: string): boolean => {
-//   const newStr: string = str.split('').reverse().join('');
-//   return newStr === str;
-// };
 // console.log(palindrom('топот'));
+//
+// console.log(isTwins(123, 321)); // true
+// console.log(isTwins(123456789, 987654321)); // true
+// console.log(isTwins(121, 211)); // false
 
-// Напишите функцию isTwins, которая получает на вход 2 числа, а возвращает являются ли эти числа близнецами.
-// Близнецы - числа, являющиеся обратными друг другу.
-// Конвертировать эти числа в строки запрещено! Иначе это просто предыдущая задача “Палиндром”!
+// console.log(
+//   printOrder({
+//     id: 4,
+//     amount: 2,
+//     status: 'Готово',
+//   }),
+// );
 
-const isTwins = (num1: number, num: number): boolean => {
-  let reversed = 0;
-  const isNegative = num < 0;
-  num = Math.abs(num);
-  while (num > 0) {
-    reversed = reversed * 10 + (num % 10);
-    num = parseInt(String(num / 10));
-  }
-  const newNum = isNegative ? -reversed : reversed;
-  return newNum === num1;
-};
-console.log(isTwins(123, 321)); // true
-console.log(isTwins(123456789, 987654321)); // true
-console.log(isTwins(121, 211)); // false
+console.log(users());
