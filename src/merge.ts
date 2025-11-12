@@ -1,4 +1,31 @@
 import { Faker, ru } from '@faker-js/faker';
+import { createHash } from 'node:crypto';
+/*
+Вам необходимо разработать сервис для авторизации пользователей.
+Примерно такие же сервисы используются в большинстве Backend приложений.
+
+Вам нужно реализовать 2 функции:
+* register() - получает на вход данные типа RegisterData с указанием почты, пароля и имени человека.
+* login() - получает на вход данные типа LoginData с указанием почты и пароля.
+
+Каждый новый зарегистрированный пользователь получает свой id, используя faker.string.nanoid
+
+Данные пусть будут храниться в массиве database, представим что это наша "база данных"
+
+Пароль хранить в базе данных в "открытом" виде НЕБЕЗОПАСНО и на самом деле никто так не делает.
+Пароли всегда хранятся в захешированном виде (напр. библиотека bcrypt), но пока хватит примитивных
+методов хеширования - будем использовать sha256, я уже оставил вам функцию generateHash,
+в неё вы можете передать строку, а в ответе получите эту строку в захешированном виде.
+
+Если пользовать регистрируется, ему должно вывестись сообщение.
+Если происходит попытка входа для несуществующего пользователя, должно вывестить сообщение
+
+При 3-х ПОДРЯД неверный попытках ввода дальнейшие входы блокируются.
+
+Если пользователь ввел пароль неверный в первый или второй раз - вывести сообщение
+Если пользователь ввел пароль неверно в третий раз ПОДРЯД - сообщение с информацией о блокировке
+ */
+import { createHash } from 'node:crypto';
 
 export const faker = new Faker({
   locale: [ru],
@@ -145,3 +172,137 @@ const order: Order = {
 };
 
 console.log(userOrders(order));
+
+/**
+ * Вам необходимо разработать сервис для авторизации пользователей.
+ * Примерно такие же сервисы используются в большинстве Backend приложений.
+ */
+function generateHash(rawText: string): string {
+  return createHash('sha256') // выбираем алгоритм SHA-256
+    .update(rawText) // обновляем хеш данными
+    .digest('hex'); // выводим результат в шестнадцатеричном формате
+}
+
+type Users = {
+  // Опишите поля
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  count: number;
+};
+
+type LoginData = {
+  // Опишите поля
+  name: string;
+  email: string;
+  password: string;
+};
+
+type RegisterData = {
+  // Опишите поля
+  name: string;
+  password: string;
+  email: string;
+};
+
+const database: Users[] = [];
+
+const register = (data: RegisterData) => {
+  const newUser = {
+    id: faker.string.nanoid(6),
+    name: data.name,
+    email: data.email,
+    password: generateHash(data.password),
+    count: 0,
+  };
+  database.push(newUser);
+  return `${newUser.name}, вы успешно зарегистрированы, ваш id - ${newUser.id}`;
+};
+
+const login = (data: LoginData) => {
+  const { email, password } = data;
+
+  for (const user of database) {
+    if (user.email === email) {
+      const passwordCorrect = generateHash(password) === user.password;
+      if (passwordCorrect) {
+        console.log(`Добро пожаловать, ${user.name}`);
+      } else {
+        if (user.count === 3) {
+          console.log('Вы заблокированы!');
+        } else if (user.count === 2) {
+          console.log('Неверный пароль! Вы заблокированы!');
+          user.count++;
+        } else {
+          console.log('Неверный пароль!');
+          user.count++;
+        }
+      }
+
+      return;
+    }
+  }
+};
+
+console.log('Пользователь не найден!');
+/**
+ * Ниже идут примеры использования ваших функций
+ */
+
+const maxim: LoginData = { name: 'maxim', email: 'maxim@gmail.com', password: '123456' };
+const mihail: LoginData = { name: 'mihail', email: 'mihail@gmail.com', password: '223223' };
+
+console.log(register(maxim)); // maxim, вы успешно зарегистрированы, ваш id - jYhvZ!
+console.log(register(mihail)); // mihail, вы успешно зарегистрированы, ваш id - oPgxU!
+
+/**
+ * Проверяем Максима, он должен на первый раз успешно войти,
+ * а дальше за 3 неверных входа заблокироваться
+ */
+console.log('Проверка Максима:');
+const maximLoginData: LoginData = { ...maxim };
+// console.log(maximLoginData);
+
+console.log(login(maximLoginData)); // Добро пожаловать, maxim
+
+maximLoginData.password = '--';
+
+login(maximLoginData); // Неверный пароль!
+login(maximLoginData); // Неверный пароль!
+login(maximLoginData); // Неверный пароль! Вы заблокированы!
+//
+// maximLoginData.password = '123456';
+// login(maximLoginData); // Вы заблокированы!
+// login(maximLoginData); // Вы заблокированы!
+//
+// /**
+//  * Проверяем Михаила, счетчик его неверных попыток входа должен сбрасываться
+//  * Блокировка не должна происходить
+//  */
+// console.log('\n\nПроверка Михаила:');
+// const mihailLoginData: RegisterData = { ...mihail };
+//
+// login(maximLoginData); // Добро пожаловать, mihail
+//
+// mihailLoginData.password = '-';
+// login(maximLoginData); // Неверный пароль!
+// login(maximLoginData); // Неверный пароль!
+//
+// mihailLoginData.password = mihail.password;
+//
+// login(maximLoginData); // Добро пожаловать, mihail
+//
+// mihailLoginData.password = '-';
+// login(maximLoginData); // Неверный пароль!
+// login(maximLoginData); // Неверный пароль!
+//
+// mihailLoginData.password = mihail.password;
+//
+// login(maximLoginData); // Добро пожаловать, mihail
+//
+// /**
+//  * Проверяем несуществующего пользователя
+//  */
+// console.log('Проверяем несуществующего пользователя:');
+// login({ email: 'a@a.a', password: 'a' }); // Пользователь не найден!
