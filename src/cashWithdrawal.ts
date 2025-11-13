@@ -98,7 +98,6 @@ console.log('Проверка на реальное снятие баланса'
 withdraw('4276 1234 5678 9101', 1234, 14000, logGreen, logRed); // Снятие наличных 14000 руб. Баланс: 1000 руб
 withdraw('4276 1234 5678 9101', 1234, 500, logGreen, logRed); // Снятие наличных 500 руб. Баланс: 500 руб
 withdraw('4276 1234 5678 9101', 1234, 501, logGreen, logRed); // Недостаточно средств
-withdraw('4276 1234 5678 9101', 1234, 500, logGreen, logRed); // Недостаточно средств
 
 separator();
 //
@@ -136,4 +135,4 @@ withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
 withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
 withdraw('4214 7777 8888 9999', 1357, a, logGreen, logRed);
 
-console.log(database);
+withdraw('4276 1234 5678 9101', 1234, 200, logGreen, logRed);
