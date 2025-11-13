@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 /*
 Напишите программу для снятия наличных денег из банкомата.
 
@@ -41,18 +42,18 @@ const database: Card[] = [
 const separator = () => console.log('----------------------\n');
 
 const blue = (data: string) => {
-  return data;
+  return chalk.blue(data);
 };
 
 const magenta = (err: string) => {
-  return err;
+  return chalk.magentaBright(err);
 };
 
 const red = (str: string) => {
-  return str;
+  return chalk.red(str);
 };
 const green = (str: string) => {
-  return str;
+  return chalk.green(str);
 };
 const logRed: CallbackFn = (msg: string) => {
   console.log(blue(new Date().toISOString()), magenta('ERROR'), red(msg));
@@ -63,18 +64,33 @@ const logGreen: CallbackFn = (msg: string) => {
 };
 
 export const withdraw = (numberCard: string, pin: number, summa: number, logGreen: CallbackFn, logRed: CallbackFn) => {
+  let card = false;
   for (let i = 0; i < database.length; i++) {
+    if (!database[i].active) return logRed(`Карта не обслуживается!`);
     if (database[i].no === numberCard) {
-      if (database[i].pin === pin) {
-        if (database[i].balance > summa) {
+      card = true;
+      if (database[i].pin === pin && database[i].badTries < 3) {
+        database[i].badTries = 0;
+        if (database[i].balance >= summa) {
           database[i].balance -= summa;
           return logGreen(`Снятие наличных ${summa} руб. Баланс: ${database[i].balance} руб`);
         }
-        return logGreen(`Недостаточно средств`);
+        return logRed(`Недостаточно средств`);
+      } else if (database[i].badTries < 2) {
+        database[i].badTries += 1;
+        return logRed(`PIN неверный!`);
+      } else if (database[i].badTries < 3) {
+        database[i].badTries += 1;
+        return logRed(`Карта заблокирована!`);
+      } else if (database[i].badTries >= 3) {
+        database[i].badTries += 1;
+        return logRed(`Карта не обслуживается!`);
       }
     }
   }
-  return '';
+  if (!card) {
+    return logGreen(`Карта не обслуживается!`);
+  }
 }; // Ваша реализация функции
 
 // Проверка на реальное снятие баланса
@@ -82,30 +98,42 @@ console.log('Проверка на реальное снятие баланса'
 withdraw('4276 1234 5678 9101', 1234, 14000, logGreen, logRed); // Снятие наличных 14000 руб. Баланс: 1000 руб
 withdraw('4276 1234 5678 9101', 1234, 500, logGreen, logRed); // Снятие наличных 500 руб. Баланс: 500 руб
 withdraw('4276 1234 5678 9101', 1234, 501, logGreen, logRed); // Недостаточно средств
+withdraw('4276 1234 5678 9101', 1234, 500, logGreen, logRed); // Недостаточно средств
 
 separator();
 //
 // // Проверка на несуществующую карту
-// console.log('Проверка на несуществующую карту');
-// withdraw('1111 2222 3333 4444', 1234, 501, logGreen, logRed); // Карта не обслуживается!
+console.log('Проверка на несуществующую карту');
+withdraw('1111 2222 3333 4444', 1234, 501, logGreen, logRed); // Карта не обслуживается!
 //
-// separator();
+separator();
 //
-// // Проверка, что карта блокируется после трех неправильных вводов PIN
-// console.log('Проверка, что карта блокируется после трех неправильных вводов PIN');
-// withdraw('4276 4444 5555 6666', 1111, 1, logGreen, logRed); // PIN неверный!
-// withdraw('4276 4444 5555 6666', 1111, 1, logGreen, logRed); // PIN неверный!
-// withdraw('4276 4444 5555 6666', 1111, 1, logGreen, logRed); // Карта заблокирована!
-// withdraw('4276 4444 5555 6666', 8765, 1, logGreen, logRed); // Карта не обслуживается!
+// Проверка, что карта блокируется после трех неправильных вводов PIN
+console.log('Проверка, что карта блокируется после трех неправильных вводов PIN');
+withdraw('4276 4444 5555 6666', 1111, 1, logGreen, logRed); // PIN неверный!
+withdraw('4276 4444 5555 6666', 1111, 1, logGreen, logRed); // PIN неверный!
+withdraw('4276 4444 5555 6666', 1111, 1, logGreen, logRed); // Карта заблокирована!
+withdraw('4276 4444 5555 6666', 8765, 1, logGreen, logRed); // Карта не обслуживается!
 //
-// separator();
+separator();
 //
 // // Проверка, что счётчик неправильных попыток сбрасывается после правильного PIN
-// console.log('Проверка, что счётчик неправильных попыток сбрасывается после правильного PIN');
-// const a = 16000;
-// withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
-// withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
-// withdraw('4214 7777 8888 9999', 1357, a, logGreen, logRed); // Снятие наличных 16000 руб. Баланс: 16000 руб
-// withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
-// withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
-// withdraw('4214 7777 8888 9999', 1357, a, logGreen, logRed); // Снятие наличных 16000 руб. Баланс: 0 руб
+console.log('Проверка, что счётчик неправильных попыток сбрасывается после правильного PIN');
+const a = 16000;
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
+withdraw('4214 7777 8888 9999', 1357, a, logGreen, logRed); // Снятие наличных 16000 руб. Баланс: 16000 руб
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed); // PIN неверный!
+withdraw('4214 7777 8888 9999', 1357, a, logGreen, logRed); // Снятие наличных 16000 руб. Баланс: 0 руб
+
+console.log('Дополнительные проверки');
+console.log('-----------------');
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
+withdraw('4214 7777 8888 9999', 1111, a, logGreen, logRed);
+withdraw('4214 7777 8888 9999', 1357, a, logGreen, logRed);
+
+console.log(database);
