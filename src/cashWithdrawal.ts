@@ -89,7 +89,7 @@ export const withdraw = (numberCard: string, pin: number, summa: number, logGree
     }
   }
   if (!card) {
-    return logGreen(`Карта не обслуживается!`);
+    return logRed(`Карта не обслуживается!`);
   }
 }; // Ваша реализация функции
 
