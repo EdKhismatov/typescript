@@ -9,7 +9,9 @@
 export type User = { id: number; age: number; name: string };
 
 const sort = (array: User[], key: string, direction: string = 'asc'): User[] => {
+  // @ts-ignore
   const arrayAsc = [...array].sort((a, b) => a[key] - b[key]);
+  // @ts-ignore
   const arrayDesc = [...array].sort((a, b) => b[key] - a[key]);
   if (key === 'age' || key === 'id') {
     return direction === 'asc' ? arrayAsc : arrayDesc;
