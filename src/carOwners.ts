@@ -68,6 +68,8 @@ const prius: Car = {
   },
 };
 
+console.log(prius.pts.owners.filter((el: User) => el.age >= 18));
+
 const res = adultOwners(prius);
 console.log(res);
 
