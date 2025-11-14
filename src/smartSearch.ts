@@ -21,10 +21,10 @@ const smartSearch = (arr: User[], property: keyof User, value: string | number) 
 
 const person1 = smartSearch(storage, 'age', 30);
 // { age: 30, name: 'Jake' }
-console.log(person1);
+// console.log(person1);
 const person2 = smartSearch(storage, 'age', 10);
 // { age: 10, name: 'Alex' }
-console.log(person2);
+// console.log(person2);
 const person3 = smartSearch(storage, 'name', 'Lilo');
 // { age: 40, name: 'Lilo' }
-console.log(person3);
+// console.log(person3);
